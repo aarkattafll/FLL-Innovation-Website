@@ -21,100 +21,12 @@
             width: 100%;
             height: 100%;
         }
-
-        /* Mobile controls */
-        #mobile-controls {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: none; /* Hidden by default, shown on mobile */
-            z-index: 1000;
-        }
-
-        .control-btn {
-            width: 60px;
-            height: 60px;
-            margin: 5px;
-            background-color: rgba(255, 255, 255, 0.5);
-            border: 2px solid #333;
-            border-radius: 50%;
-            touch-action: manipulation;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 24px;
-            -webkit-user-select: none;
-            user-select: none;
-        }
-
-        #arrow-container {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 5px;
-        }
-
-        @media (max-width: 768px) {
-            #mobile-controls {
-                display: block;
-            }
-        }
     </style>
 </head>
 <body>
     <iframe allow="fullscreen" src="https://flowlab.io/game/embed/2648832" id="gameFrame"></iframe>
-    
-    <div id="mobile-controls">
-        <div id="arrow-container">
-            <div></div>
-            <button class="control-btn" id="upBtn">↑</button>
-            <div></div>
-            <button class="control-btn" id="leftBtn">←</button>
-            <button class="control-btn" id="downBtn">↓</button>
-            <button class="control-btn" id="rightBtn">→</button>
-        </div>
-    </div>
 
     <script>
-        // Function to simulate keyboard events
-        function simulateKey(keyCode, type) {
-            const event = new KeyboardEvent(type, {
-                bubbles: true,
-                cancelable: true,
-                keyCode: keyCode
-            });
-            document.dispatchEvent(event);
-        }
-
-        // Touch event handlers for mobile controls
-        const buttons = {
-            'upBtn': 38,    // Up arrow key code
-            'downBtn': 40,  // Down arrow key code
-            'leftBtn': 37,  // Left arrow key code
-            'rightBtn': 39  // Right arrow key code
-        };
-
-        Object.entries(buttons).forEach(([btnId, keyCode]) => {
-            const button = document.getElementById(btnId);
-            
-            button.addEventListener('touchstart', (e) => {
-                e.preventDefault();
-                simulateKey(keyCode, 'keydown');
-            });
-
-            button.addEventListener('touchend', (e) => {
-                e.preventDefault();
-                simulateKey(keyCode, 'keyup');
-            });
-        });
-
-        // Prevent default touch behavior to avoid scrolling
-        document.addEventListener('touchmove', (e) => {
-            if (e.target.className === 'control-btn') {
-                e.preventDefault();
-            }
-        }, { passive: false });
-
         // Adjust iframe size on window resize
         function resizeFrame() {
             const iframe = document.querySelector('iframe');
@@ -139,5 +51,27 @@
         window.addEventListener('resize', resizeFrame);
         resizeFrame(); // Initial resize
     </script>
+    <style>
+    #mobile-message {
+        display: none;
+        text-align: center;
+        padding: 20px;
+        background: rgba(0,0,0,0.8);
+        color: white;
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+    }
+    @media (max-width: 768px) {
+        #mobile-message {
+            display: block;
+        }
+    }
+</style>
+
+<div id="mobile-message">
+    This game requires a keyboard to play. Please use a desktop computer for the best experience.
+</div>
+    
 </body>
 </html>

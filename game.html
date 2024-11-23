@@ -11,45 +11,84 @@
             overflow: hidden;
             height: 100vh;
             width: 100vw;
-            display: flex;
-            flex-direction: column;
         }
         
         iframe {
             border: 0;
-            flex-grow: 1;
             width: 100%;
             height: 100%;
+            display: block;
         }
     </style>
 </head>
 <body>
-    <iframe allow="fullscreen; touch-action; gamepad" src="https://flowlab.io/game/embed/2648832" id="gameFrame"></iframe>
+    <iframe 
+        src="https://flowlab.io/game/embed/2648832" 
+        id="gameFrame" 
+        allow="fullscreen; gamepad" 
+        allowfullscreen>
+    </iframe>
 
     <script>
-        // Adjust iframe size on window resize
-        function resizeFrame() {
-            const iframe = document.querySelector('iframe');
-            const windowRatio = window.innerWidth / window.innerHeight;
-            const gameRatio = 1536 / 1024;  // Original game dimensions
+        // Original game dimensions
+        const GAME_WIDTH = 1536;
+        const GAME_HEIGHT = 1024;
+        const GAME_RATIO = GAME_WIDTH / GAME_HEIGHT;
 
-            if (windowRatio > gameRatio) {
-                // Height limited
-                const height = window.innerHeight;
-                const width = height * gameRatio;
-                iframe.style.width = width + 'px';
-                iframe.style.height = height + 'px';
+        // Function to adjust iframe size based on window size and game aspect ratio
+        function resizeFrame() {
+            const iframe = document.getElementById('gameFrame');
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+            const windowRatio = windowWidth / windowHeight;
+
+            if (windowRatio > GAME_RATIO) {
+                // Height is the limiting factor
+                iframe.style.width = (windowHeight * GAME_RATIO) + 'px';
+                iframe.style.height = windowHeight + 'px';
             } else {
-                // Width limited
-                const width = window.innerWidth;
-                const height = width / gameRatio;
-                iframe.style.width = width + 'px';
-                iframe.style.height = height + 'px';
+                // Width is the limiting factor
+                iframe.style.width = windowWidth + 'px';
+                iframe.style.height = (windowWidth / GAME_RATIO) + 'px';
             }
+
+            // Center the iframe horizontally and vertically
+            iframe.style.position = 'absolute';
+            iframe.style.left = '50%';
+            iframe.style.top = '50%';
+            iframe.style.transform = 'translate(-50%, -50%)';
         }
 
+        // Event listener for window resize
         window.addEventListener('resize', resizeFrame);
-        resizeFrame(); // Initial resize
+
+        // Event listener for orientation change
+        window.addEventListener('orientationchange', () => {
+            // Delay the resize to ensure the orientation change has been applied
+            setTimeout(resizeFrame, 300);
+        });
+
+        // Initial resize
+        window.addEventListener('load', resizeFrame);
     </script>
+    <button id="fullscreenBtn">Go Fullscreen</button>
+
+<script>
+    const fullscreenBtn = document.getElementById('fullscreenBtn');
+    const iframe = document.getElementById('gameFrame');
+
+    fullscreenBtn.addEventListener('click', () => {
+        if (iframe.requestFullscreen) {
+            iframe.requestFullscreen();
+        } else if (iframe.mozRequestFullScreen) { /* Firefox */
+            iframe.mozRequestFullScreen();
+        } else if (iframe.webkitRequestFullscreen) { /* Chrome, Safari & Opera */
+            iframe.webkitRequestFullscreen();
+        } else if (iframe.msRequestFullscreen) { /* IE/Edge */
+            iframe.msRequestFullscreen();
+        }
+    });
+</script>
+
 </body>
 </html>
